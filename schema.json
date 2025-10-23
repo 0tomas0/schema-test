@@ -1517,6 +1517,30 @@
 			},
 			"description": "Configuration of connected devices.\n \n*Used by apps:* `WinPOS`\n"
 		},
+		"JarvisSettings": {
+			"type": [
+				"object",
+				"null"
+			],
+			"properties": {
+				"BaseUrl": {
+					"type": [
+						"string",
+						"null"
+					],
+					"description": "Base URL of Jarvis API.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinSCO`,`AndroidPOS`\n"
+				},
+				"TimeoutInMilliseconds": {
+					"type": [
+						"integer",
+						"null"
+					],
+					"description": "Timeout in milliseconds for requests to Jarvis API.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinSCO`,`AndroidPOS`\n",
+					"default": 5000
+				}
+			},
+			"description": "PoN - Jarvis settings.\n \n*Used by apps:* `WinSCO`,`AndroidPOS`\n"
+		},
 		"MessageCenterSettings": {
 			"type": "object",
 			"properties": {
@@ -2015,13 +2039,6 @@
 					"description": "Page width.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
 					"default": true
 				},
-				"InvoiceSchema": {
-					"type": [
-						"string",
-						"null"
-					],
-					"description": "Invoice schema name.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
-				},
 				"LanguageIsoCode": {
 					"type": "string",
 					"description": "Language ISO code.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n",
@@ -2045,13 +2062,6 @@
 					"type": "boolean",
 					"description": "Page width.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
 					"default": true
-				},
-				"InvoiceSchema": {
-					"type": [
-						"string",
-						"null"
-					],
-					"description": "Invoice schema name.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
 				},
 				"PageWidth": {
 					"type": "integer",
@@ -2111,13 +2121,6 @@
 					"description": "Page width.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
 					"default": true
 				},
-				"InvoiceSchema": {
-					"type": [
-						"string",
-						"null"
-					],
-					"description": "Invoice schema name.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
-				},
 				"BaseUri": {
 					"type": [
 						"string",
@@ -2160,13 +2163,6 @@
 					"type": "boolean",
 					"description": "Page width.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
 					"default": true
-				},
-				"InvoiceSchema": {
-					"type": [
-						"string",
-						"null"
-					],
-					"description": "Invoice schema name.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
 				},
 				"CashRegisterCode": {
 					"type": [
@@ -2259,13 +2255,6 @@
 					"description": "Page width.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
 					"default": true
 				},
-				"InvoiceSchema": {
-					"type": [
-						"string",
-						"null"
-					],
-					"description": "Invoice schema name.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
-				},
 				"BaseUrl": {
 					"type": [
 						"string",
@@ -2313,6 +2302,10 @@
 						"null"
 					],
 					"description": "Additional qr code info.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
+				},
+				"ValidateCashierVatIdentifier": {
+					"type": "boolean",
+					"description": "Validate cashier vat identifier.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
 				}
 			},
 			"description": "Fiscal module options."
