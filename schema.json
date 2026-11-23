@@ -268,6 +268,13 @@
 						"null"
 					],
 					"description": "Points earned error message, when is problem with earn points.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n"
+				},
+				"LoyaltyQrCode": {
+					"type": [
+						"string",
+						"null"
+					],
+					"description": "Loyalty QR code.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
 				}
 			},
 			"description": "Loyalty system configuration.\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n"
@@ -526,6 +533,11 @@
 					"$ref": "#/$defs/timeSpan",
 					"description": "Timeout for session request to platform.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
 					"default": "00:00:10"
+				},
+				"RabbitConnectionRetryIntervalSeconds": {
+					"type": "integer",
+					"description": "Timeout for RabbitMQ connection retry interval in seconds.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
+					"default": "60"
 				}
 			},
 			"description": "Application settings.\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n"
@@ -1023,27 +1035,6 @@
 				}
 			},
 			"description": "Peripheral settings.\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
-		},
-		"ImageCacheSettings": {
-			"type": "object",
-			"properties": {
-				"CacheDuration": {
-					"$ref": "#/$defs/timeSpan",
-					"description": "Life duration of every cache entry.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`\n",
-					"default": "24:00:00"
-				},
-				"MaxMemoryCacheCount": {
-					"type": "integer",
-					"description": "Max in-memory item storage count\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`\n",
-					"default": 20
-				},
-				"RetryCount": {
-					"type": "integer",
-					"description": "Number of retries trying to ensure the file is cached.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`\n",
-					"default": 1
-				}
-			},
-			"description": "Image cache settings.\n \n*Used by apps:* `WinPOS`\n"
 		},
 		"CancellationOptions": {
 			"type": "object",
@@ -1551,6 +1542,21 @@
 					"type": "boolean",
 					"description": "Vacuum database after user login, true start vacuum, otherwise don't vacuum.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n",
 					"default": false
+				},
+				"ImageStoragePath": {
+					"type": "string",
+					"description": "Root directory for downloaded database images. Relative paths are resolved from the application directory.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n",
+					"default": "Images"
+				},
+				"ImageDownloadTimeout": {
+					"$ref": "#/$defs/timeSpan",
+					"description": "Maximum time allowed to download one database image.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n",
+					"default": "00:00:05"
+				},
+				"ImageDownloadMaxSizeMiB": {
+					"type": "integer",
+					"description": "Maximum size of one downloaded database image in MiB (1 MiB = 1,048,576 bytes).\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n",
+					"default": 5
 				}
 			},
 			"description": "Pos settings.\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n"
@@ -1825,6 +1831,15 @@
 							],
 							"description": "Fiscal receipt limit.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`\n",
 							"default": 400
+						},
+						"EFakturaStartDateTime": {
+							"$ref": "#/$defs/dateTimeOffset",
+							"description": "Start of the new electronic invoice (e-faktúra) regime.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n"
+						},
+						"EmailToastDuration": {
+							"$ref": "#/$defs/timeSpan",
+							"description": "Email message dialog auto-close duration.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n",
+							"default": "00:00:07"
 						}
 					},
 					"description": "OEC options."
@@ -2185,11 +2200,39 @@
 						"PartialInvoiceCancellationForbiden": {
 							"type": "boolean",
 							"description": "Invoice partial cancellation forbiden.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n"
+						},
+						"VerifyFiscalSalesAfterCrash": {
+							"type": "boolean",
+							"description": "Compare after POS crash fiscal and POS sales.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n"
+						},
+						"ReconsiliationSettings": {
+							"type": [
+								"object",
+								"null"
+							],
+							"properties": {
+								"FiscalMopsBinding": {
+									"$ref": "#/$defs/dictionaryOfStringAndString",
+									"description": "Fiscal mops binding to POS MOP codes.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n"
+								},
+								"PosMopsMerging": {
+									"description": "POS mops merged in reconsiliation to one specific MOP.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n",
+									"type": "object",
+									"additionalProperties": {
+										"$ref": "#/$defs/arrayOfString"
+									}
+								},
+								"SkipMops": {
+									"$ref": "#/$defs/arrayOfString",
+									"description": "Codes of MOPs, that are not included in reconsiliation.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n"
+								}
+							},
+							"description": "Z report reconsiliation settings."
 						}
 					},
 					"description": "Romanian fiscal options."
 				},
-				"FisCatModuleOptions": {
+				"FisCatOptions": {
 					"type": [
 						"object",
 						"null"
@@ -2247,6 +2290,58 @@
 					},
 					"description": "Fiscat options."
 				},
+				"CzFiscalOptions": {
+					"type": [
+						"object",
+						"null"
+					],
+					"properties": {
+						"PaperWidth": {
+							"type": "integer",
+							"description": "Page width.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
+							"default": 42
+						},
+						"FiscalReceiptWidth": {
+							"type": [
+								"integer",
+								"null"
+							],
+							"description": "Page width for fiscal receipts.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`\n",
+							"default": 56
+						},
+						"ShowStatus": {
+							"type": "boolean",
+							"description": "Show status options.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n",
+							"default": true
+						},
+						"Version": {
+							"type": [
+								"string",
+								"null"
+							],
+							"description": "Version of fiscal module.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`,`WinSCO`\n"
+						},
+						"Endpoint": {
+							"type": "string",
+							"description": "EET endpoint.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`\n"
+						},
+						"ResponseTimeout": {
+							"type": "integer",
+							"description": "Maximum time in milliseconds to wait for the EET response (minimum 2000).\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`\n",
+							"default": 2000
+						},
+						"PokPrintType": {
+							"$ref": "#/$defs/pokPrintTypeEnum",
+							"description": "POK print type.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n",
+							"default": 2
+						},
+						"EetRegistrationStartDateTime": {
+							"$ref": "#/$defs/dateTimeOffset",
+							"description": "Gets or sets the date and time when EET registration starts.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`\n"
+						}
+					},
+					"description": "Czech fiscal options."
+				},
 				"DummyModuleOptions": {
 					"type": [
 						"object",
@@ -2282,6 +2377,11 @@
 							"type": "string",
 							"description": "Language ISO code.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n",
 							"default": "hu"
+						},
+						"Timeout": {
+							"$ref": "#/$defs/timeSpan",
+							"description": "Timeout used to simulate dummy fiscal operations.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n",
+							"default": "00:00:02"
 						}
 					},
 					"description": "Dummy fiscal module options."
@@ -2602,12 +2702,26 @@
 					],
 					"description": "Vat class mapping code.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
 				},
+				"VatClassCodeMappingCode": {
+					"type": [
+						"string",
+						"null"
+					],
+					"description": "Vat class mapping code by vat code.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
+				},
 				"VatClassPartnerMappingCode": {
 					"type": [
 						"string",
 						"null"
 					],
 					"description": "Vat class mapping code for partner.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
+				},
+				"VatClassCodePartnerMappingCode": {
+					"type": [
+						"string",
+						"null"
+					],
+					"description": "Vat class mapping code for partner by vat code.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
 				},
 				"FuelProductMappingCode": {
 					"type": [
@@ -2775,7 +2889,9 @@
 				"BaseAddress",
 				"CreditGroupMappingCode",
 				"VatClassMappingCode",
+				"VatClassCodeMappingCode",
 				"VatClassPartnerMappingCode",
+				"VatClassCodePartnerMappingCode",
 				"FuelProductMappingCode",
 				"ExternalSymbolMode"
 			],
@@ -2859,11 +2975,8 @@
 					],
 					"properties": {
 						"EscSequences": {
-							"description": "Esc sequences.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n",
-							"type": "object",
-							"additionalProperties": {
-								"type": "string"
-							}
+							"$ref": "#/$defs/dictionaryOfStringAndString",
+							"description": "Esc sequences.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
 						}
 					},
 					"description": "Sequence options."
@@ -3277,11 +3390,110 @@
 				"CZ_Virtual",
 				"SLO_eDavki",
 				"RO_MasterComp",
+				"CZ_EET",
 				"Dummy"
 			],
-			"$comment": "Undefined -> Undefined fiscal.\n \nSK_Ekasa -> Slovak eKasa.\n \nHU_Fiscat -> Hungarian Fiscat.\n \nCZ_Virtual -> Czech virtual fiscal.\n \nSLO_eDavki -> Slovenian eDavki.\n \nRO_MasterComp -> Romanian MasterComp fiscal.\n \nDummy -> Dummy fiscal.",
+			"$comment": "Undefined -> Undefined fiscal.\n \nSK_Ekasa -> Slovak eKasa.\n \nHU_Fiscat -> Hungarian Fiscat.\n \nCZ_Virtual -> Czech virtual fiscal.\n \nSLO_eDavki -> Slovenian eDavki.\n \nRO_MasterComp -> Romanian MasterComp fiscal.\n \nCZ_EET -> Czech EET 2.0\n \nDummy -> Dummy fiscal.",
 			"description": "Fiscal type.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n",
 			"default": 0
+		},
+		"dateTimeOffset": {
+			"type": "object",
+			"properties": {
+				"DateTime": {
+					"$ref": "#/$defs/dateTime",
+					"readOnly": true
+				},
+				"UtcDateTime": {
+					"$ref": "#/$defs/dateTime",
+					"readOnly": true
+				},
+				"LocalDateTime": {
+					"$ref": "#/$defs/dateTime",
+					"readOnly": true
+				},
+				"Date": {
+					"$ref": "#/$defs/dateTime",
+					"readOnly": true
+				},
+				"Day": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"DayOfWeek": {
+					"readOnly": true,
+					"enum": [
+						"Sunday",
+						"Monday",
+						"Tuesday",
+						"Wednesday",
+						"Thursday",
+						"Friday",
+						"Saturday"
+					],
+					"$comment": "Sunday -> Sunday\n \nMonday -> Monday\n \nTuesday -> Tuesday\n \nWednesday -> Wednesday\n \nThursday -> Thursday\n \nFriday -> Friday\n \nSaturday -> Saturday"
+				},
+				"DayOfYear": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Hour": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Millisecond": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Microsecond": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Nanosecond": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Minute": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Month": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Offset": {
+					"$ref": "#/$defs/timeSpan",
+					"readOnly": true
+				},
+				"TotalOffsetMinutes": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Second": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"Ticks": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"UtcTicks": {
+					"type": "integer",
+					"readOnly": true
+				},
+				"TimeOfDay": {
+					"$ref": "#/$defs/timeSpan",
+					"readOnly": true
+				},
+				"Year": {
+					"type": "integer",
+					"readOnly": true
+				}
+			}
+		},
+		"dateTime": {
+			"type": "string",
+			"format": "date-time"
 		},
 		"deviceType": {
 			"enum": [
@@ -3292,9 +3504,20 @@
 			"description": "Device type.\n \n*Recommended config level:* `Application`\n \n*Change type:* `Restart`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n",
 			"default": 0
 		},
-		"dateTime": {
-			"type": "string",
-			"format": "date-time"
+		"dictionaryOfStringAndString": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "string"
+			}
+		},
+		"pokPrintTypeEnum": {
+			"enum": [
+				"Off",
+				"Text",
+				"QRCode"
+			],
+			"$comment": "Off -> Do not print POK.\n \nText -> Print POK as text.\n \nQRCode -> Print POK as QR code.",
+			"description": "POK print type enumeration.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinSCO`,`WinOPT`\n"
 		},
 		"tritonProcessType": {
 			"enum": [
@@ -3420,11 +3643,8 @@
 			"type": "object",
 			"properties": {
 				"EscSequences": {
-					"description": "Esc sequences.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n",
-					"type": "object",
-					"additionalProperties": {
-						"type": "string"
-					}
+					"$ref": "#/$defs/dictionaryOfStringAndString",
+					"description": "Esc sequences.\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
 				}
 			},
 			"description": "Sequence options.\n \n*Used by apps:* `WinPOS`,`WinOPT`\n \n*Recommended config level:* `Merchant`\n \n*Change type:* `Automatic`\n \n*Used by apps:* `WinPOS`,`WinOPT`\n"
